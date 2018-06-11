@@ -190,11 +190,26 @@ class Service:
 class Search(Service):
 
     def get_collections(self, st_ip, st_port, token):
-        collections_url = "data/collections"
-        return self.request(st_ip, st_port, token, collections_url)
+        resource = "data/collections"
+        return self.request(st_ip, st_port, token, resource)
 
     def collection_request(self, st_ip, st_port, token, collection):
         resource = "data/collections/" + collection
+        return self.request(st_ip, st_port, token, resource)
+
+    def get_documents(self, st_ip, st_port, token, collection, offset=0, limit=0):
+        if offset != 0 and limit != 0:
+            resource = "data/collections/" + collection + "/documents?" + "offset=" + offset +'\&limit=' + limit
+        elif offset != 0 and limit == 0:
+            resource = "data/collections/" + collection + "/documents?" + "offset=" + offset
+        elif offset == 0 and limit != 0:
+            resource = "data/collections/" + collection + "/documents" +'?limit=' + limit
+        else:
+            resource = "data/collections/" + collection + "/documents"
+        return self.request(st_ip, st_port, token, resource)
+
+    def document_request(self, st_ip, st_port, token, collection, document_id):
+        resource = resource = "data/collections/" + collection + "/documents/" + document_id
         return self.request(st_ip, st_port, token, resource)
 
 class Statistics(Service):
@@ -205,7 +220,7 @@ class Statistics(Service):
 
 class Licensing(Service):
     pass
-    #   TODO:   https://stdoc.pg.local/pages/viewpage.action?pageId=13241709
+    #   TODO:   Licence API - https://stdoc.pg.local/pages/viewpage.action?pageId=13241709
 
 class DFP(Service):
     pass
