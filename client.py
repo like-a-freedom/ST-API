@@ -209,7 +209,11 @@ class Search(Service):
         return self.request(st_ip, st_port, token, resource)
 
     def document_request(self, st_ip, st_port, token, collection, document_id):
-        resource = resource = "data/collections/" + collection + "/documents/" + document_id
+        resource =  "data/collections/" + collection + "/documents/" + document_id
+        return self.request(st_ip, st_port, token, resource)
+    
+    def get_document_content(self, st_ip, st_port, token, collection, document_id, mode="original"):
+        resource = "/data/collections/" + collection + "/documents/" + document_id + "/contents/" + mode    #   mode = [original|extracted|converted|highlighted]
         return self.request(st_ip, st_port, token, resource)
 
 class Statistics(Service):
