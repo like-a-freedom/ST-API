@@ -215,6 +215,10 @@ class Search(Service):
     def get_document_content(self, st_ip, st_port, token, collection, document_id, mode="original"):
         resource = "/data/collections/" + collection + "/documents/" + document_id + "/contents/" + mode    #   mode = [original|extracted|converted|highlighted]
         return self.request(st_ip, st_port, token, resource)
+    
+    def dfp_search(self, st_ip, st_port, token, dfp_id, query, threshold_value):
+        resource = "/dfp/" + dfp_id + "/search?query=" + query + "&threshold=" + threshold_value
+        return self.request(st_ip, st_port, token, resource)
 
 class Statistics(Service):
     pass
