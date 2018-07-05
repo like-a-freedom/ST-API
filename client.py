@@ -123,8 +123,11 @@ class Search(Service):
         resource = "/data/collections/" + collection + "/documents/" + document_id + "/contents/" + mode    #   mode = [original|extracted|converted|highlighted]
         return self.request(st_ip, st_port, token, resource)
     
-    def dfp_search(self, st_ip, st_port, token, dfp_id, query, threshold_value):
-        resource = "/dfp/" + dfp_id + "/search?query=" + query + "&threshold=" + threshold_value
+    def dfp_search(self, st_ip, st_port, token, dfp_id, query, threshold_value=50):
+        if threshold_value is not int:
+            raise ValueError("Threshold value must be a string!")
+        else:
+            resource = "/dfp/" + dfp_id + "/search?query=" + query + "&threshold=" + threshold_value
         return self.request(st_ip, st_port, token, resource)
 
 class Statistics(Service):
