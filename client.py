@@ -155,7 +155,70 @@ class Configure(Service):
 class Extras(Service):
     pass
     #   TODO:   Services - https://stdoc.pg.local/pages/viewpage.action?pageId=4128877
+
+    #   /services resource
+
+    def supported_dbms_providers(self, st_ip, st_port, token):
+        resource = "/services/dbms"
+        return self.request(st_ip, st_port, token, resource)
+
+    def enum_db_in_dbms(self, st_ip, st_port, token, connection_string):
+        #   SQLite is not supports that method. PostreSQL connection string must contains "postgres" db
+        resource = "/services/dbms/:dbms/databases?timeout=10"
+        body = json.dumps(connection_string)
+        return self.request(st_ip, st_port, token, resource, http_method = "POST", http_payload = body)
     
+    def check_dbms_connection(self, st_ip, st_port, token, connection_string):
+        resource = "/services/dbms/:dbms/connect?timeout=10"
+        body = json.dumps(connection_string)
+        return self.request(st_ip, st_port, token, resource, http_method = "POST", http_payload = body)
+
+    def check_dbms_connection_and_get_db_scheme(self, st_ip, st_port, token, connection_string):
+        resource = "/services/dbms/:dbms/schema_version?timeout=10"
+        body = json.dumps(connection_string)
+        return self.request(st_ip, st_port, token, resource, http_method = "POST", http_payload = body)
+    
+    def make_sql_request(self, st_ip, st_port, token, connection_string, sql):
+        resource = "/services/dbms/:dbms/sql?timeout=10"
+        ''' Another JSON generating method
+        mydict - {
+            connection_string,
+            sql,
+        }
+        body = json.dumps(mydict)
+        '''
+        body = json.dumps([connection_string, sql])     #   Not tested ;)
+        return self.request(st_ip, st_port, token, resource, http_method = "POST", http_payload = body)
+
+    def get_db_tables(self, st_ip, st_port, token, connection_string):
+        resource = "/services/dbms/:dbms/tables?timeout=10"
+        body = json.dumps(connection_string)
+        return self.request(st_ip, st_port, token, resource, http_method = "POST", http_payload = body)
+
+    def get_db_columns_list(self, st_ip, st_port, token, connection_string):
+        resource = "/services/dbms/:dbms/columns?timeout=10"
+        body = json.dumps(connection_string)
+        return self.request(st_ip, st_port, token, resource, http_method = "POST", http_payload = body)
+
+    def create_sqlite_db_file(self, st_ip, st_port, token, connection_string):
+        #   Note that connection string must be as full path to the file on disk
+        resource = "/services/dbms/sqlite/create_database_file?timeout=10"
+        body = json.dumps(connection_string)
+        return self.request(st_ip, st_port, token, resource, http_method = "POST", http_payload = body)
+    
+    def get_filesystem_tree(self, st_ip, st_port, token, root_folder):
+        resource = "/services/fs[?path=" + root_folder + "]"
+        return self.request(st_ip, st_port, token, resource)
+    
+    def create_directory(self, st_ip, st_port, token, folder_path):
+        resource = "/services/fs?path=" + folder_path
+        return self.request(st_ip, st_port, token, resource, http_method = "POST")
+
+#   TODO:   Indexer's file tree
+    
+    
+    #   /system resource
+
     def get_domains(self, st_ip, st_port, token):
         resource = "/data/system/domains"
         return self.request(st_ip, st_port, token, resource)
