@@ -155,6 +155,19 @@ class Configure(Service):
 class Extras(Service):
     pass
     #   TODO:   Services - https://stdoc.pg.local/pages/viewpage.action?pageId=4128877
+    
+    def get_domains(self, st_ip, st_port, token):
+        resource = "/data/system/domains"
+        return self.request(st_ip, st_port, token, resource)
+
+    def get_machines(self, st_ip, st_port, token):
+        resource = "/data/system/machines"
+        return self.request(st_ip, st_port, token, resource)
+    
+    def get_users(self, st_ip, st_port, token):
+        resource = "/data/system/users"
+        return self.request(st_ip, st_port, token, resource)
+
 
 class Categorizer(Service):
     pass
