@@ -214,8 +214,30 @@ class Extras(Service):
         resource = "/services/fs?path=" + folder_path
         return self.request(st_ip, st_port, token, resource, http_method = "POST")
 
-#   TODO:   Indexer's file tree
+#   Indexer service
+
+    def get_indexer_filesystem_tree(self, st_ip, st_port, token, root_folder):
+        resource = "/services/indexer_fs?address=" + st_ip + ":" + st_port +"[&path=" + root_folder +"]"
+        return self.request(st_ip, st_port, token, resource)
+
+    def create_indexer_directory(self, st_ip, st_port, token, folder_path):
+        resource = "services/indexer_fs?address=" + st_ip + ":" + st_port + "&path=" + folder_path
+        body = json.dumps(folder_path)
+        return self.request(st_ip, st_port, token, resource, http_method = "POST", http_payload = body)
+
+    def get_indexer_file_content(self, st_ip, st_port, token, size=100, offset=20):
+        resource = "services/indexer_fs/file?address=" + st_ip + ":" + st_port + "&path=file_path[&offset=" + offset + "][&size=" + size + "]"
+        return self.request(st_ip, st_port, token, resource)
     
+    def check_indexer_connections(self, st_ip, st_port, token):
+        resource = "/services/connect/index_server?address=" + st_ip + ":" + st_port
+        return self.request(st_ip, st_port, token, resource)
+        #   Return JSON with bool - true or false
+    
+    def check_search_server_connections(self, st_ip, st_port, token):
+        resource = "/services/connect/search_server?address=" + st_ip + ":" + st_port
+        return self.request(st_ip, st_port, token, resource)
+        #   Return JSON with bool - true or false
     
     #   /system resource
 
