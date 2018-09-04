@@ -1,0 +1,43 @@
+version: 1
+type: ConversationMessage
+source_info {
+  replics: "PG-ST.pg.local"
+}
+[Falcongaze.SecureTower.Protocol.MessageDataConversationMessage.data] {
+  sys_info {
+    address: "192.168.4.102"
+    mname: "pg1028"
+    mdnsname: "pg1028.pg.local"
+    msid: "S-1-5-21-2707958790-208143962-3285197081"
+    mdomainsid: "S-1-5-21-2369683944-1213016059-2822112797-6655"
+    dname: "pg"
+    ddnsname: "pg.local"
+    dsid: "S-1-5-21-2369683944-1213016059-2822112797"
+    usid: "S-1-5-21-2369683944-1213016059-2822112797-8732"
+    uname: "PG\\v.karneyeu"
+    udispname: "\320\222\320\270\320\272\321\202\320\276\321\200 \320\232\320\276\321\200\320\275\320\265\320\265\320\262"
+    udsid: "S-1-5-21-2369683944-1213016059-2822112797"
+    udname: "pg"
+    uddnsname: "pg.local"
+    dtime_tzbias: -180
+  }
+  dtime_utc: 131793227102376734
+  dtime_msg_utc: 131793227100000000
+  messenger_name: "skype"
+  messenger_type: "agent"
+  conversation_hash: "A408098675DDA6D93554FB29B316DC1D65845084"
+  message_id: "975094568116006240"
+  local_user: "fg-sale10"
+  sender_user: "fg-sale10"
+  chat_users: "fg-sup8\r\n"
+  message_body: "\320\270\320\273\320\270 \321\202\321\213 \320\275\320\265 \321\207\320\270\321\202\320\260\320\273 \320\277\320\270\321\201\321\214\320\274\320\276?)))"
+  message_info: "{\n    \"info\": {\n        \"users_info\": [\n            {\n                \"login\": \"fg-sale10\",\n                \"phone\": \"fg-sale10\"\n            },\n            {\n                \"login\": \"fg-sup8\",\n                \"phone\": \"fg-sup8\"\n            }\n        ]\n    }\n}\n"
+  process_info {
+    process_name: "Skype.exe"
+    process_filepath: "C:\\Program Files (x86)\\Microsoft\\Skype for Desktop\\Skype.exe"
+    process_version: "8.28"
+    process_product_name: "Skype"
+    process_company_name: "Skype Technologies S.A."
+    process_description: "Skype"
+  }
+}

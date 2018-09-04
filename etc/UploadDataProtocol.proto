@@ -1,0 +1,696 @@
+syntax = "proto2";
+package Falcongaze.SecureTower.Protocol;
+
+
+enum MessageType
+{
+  SMTP = 1;
+  POP3 = 2;
+  IMAP = 3;
+  MAPI = 4;
+  DesktopNoop = 5;
+  DesktopProcess = 6;
+  DesktopAppIcon = 7;
+  DesktopActivateWindow = 8;
+  DesktopUnactivateWindow = 9;
+  DesktopEvent = 10;
+  Screenshot = 11;
+
+  BrowserEvent = 12;
+  Keylogger = 13;
+  MailProcessing = 14;
+  Clipboard = 15;
+  Printer = 16;
+  FTP = 17;
+  SharedFiles = 18;
+  CdDvdStorage = 19;
+  UsbFiles = 20;
+  CloudFiles = 21;
+  WsIndexerEvent = 22;
+  Device = 23;
+  MAPIOutlook = 24;
+  Http = 25;
+
+  WebMsgMessage = 26;
+  WebMsgMailMessage = 27;
+  WebMsgComment = 28;
+
+  ConversationMessage = 29;
+  ConversationVoice = 30;
+  ConversationFile = 31;
+
+  DesktopBulkNoops = 32;
+}
+
+
+message MessageHeader {
+  required int32 version = 1 [default = 1];
+  required MessageType type = 2;
+  extensions 1000 to 10000;
+}
+
+
+message MessageSystemInfo {
+  optional string address = 1;        //  "192.168.1.1"
+  optional string mname = 2;          //  "fg1080"
+  optional string mdnsname = 3;       //  "fg1080.fg.local"
+  optional string msid = 4;           //  "S-1237128937-123123-123123"
+  optional string mdomainsid = 5;     //  "S-1237128937-123210000003-12903833"
+  optional string dname = 6;          //  domain name: "fg"
+  optional string ddnsname = 7;       //  "fg.local"
+  optional string dsid = 8;           //  domain SID: "S-1237128937"
+  optional string usid = 9;           //  user's local SID: "S-1237128937-123210000003-12321311"
+  optional string uname = 10;         //  user's system name: "fg\v.kolbasja"
+  optional string udispname = 11;     //  user's display name: "Вася Колбася"
+  optional string udsid = 12;         //  user's domain SID: "S-1237128937"
+  optional string udname = 13;        //  user's domain name: "fg"
+  optional string uddnsname = 14;     //  user's domain dns: "fg.local"
+  optional int32 dtime_tzbias = 15;   //  user's timezone: "-180"
+  optional string mfqdn = 16;         //  computer's FQDN (LDAP): "CN=PG1032,OU=Desktops,DC=pg,DC=local"
+  optional string ufqdn = 17;         //  user's FQDN: "CN=Наталья Тюхай,OU=Minsk,OU=Profigroup,DC=pg,DC=local"
+}
+
+
+message MessageProcessInfo {
+  optional string process_name = 1;
+  optional string process_filepath = 2;
+  optional string process_version = 3;
+  optional string process_product_name = 4;
+  optional string process_company_name = 5;
+  optional string process_description = 6;
+}
+
+
+message MessagePrinterInfo {
+  optional string printer_name = 1;
+}
+
+
+message MessageDataSMTP {
+  extend MessageHeader
+  {
+    optional MessageDataSMTP data = 1000;
+  }
+  optional MessageSystemInfo sys_info = 1;
+  optional string host_address = 2;
+  optional uint32 host_port = 3;
+  optional uint64 dtime_utc = 4;
+  optional uint32 flags = 5;
+  optional string user_name = 6;
+  optional string user_pass = 7;
+  optional string smtp_mfrom = 8;
+  optional string smtp_rcptto = 9;
+  optional bytes msg = 10;
+  optional string blocking_rules = 11;
+  optional MessageProcessInfo process_info = 12;
+}
+
+
+message MessageDataPOP3 {
+  extend MessageHeader
+  {
+    optional MessageDataPOP3 data = 1001;
+  }
+  optional MessageSystemInfo sys_info = 1;
+  optional string host_address = 2;
+  optional uint32 host_port = 3;
+  optional uint64 dtime_utc = 4;
+  optional uint32 flags = 5;
+  optional string user_name = 6;
+  optional string user_pass = 7;
+  optional bytes msg = 8;
+  optional MessageProcessInfo process_info = 9;
+}
+
+
+message MessageDataIMAP {
+  extend MessageHeader
+  {
+    optional MessageDataIMAP data = 1002;
+  }
+  optional MessageSystemInfo sys_info = 1;
+  optional string host_address = 2;
+  optional uint32 host_port = 3;
+  optional uint64 dtime_utc = 4;
+  optional uint32 flags = 5;
+  optional uint32 data_type = 6;
+  optional string user_name = 7;
+  optional string user_pass = 8;
+  optional bytes msg = 9;
+  optional MessageProcessInfo process_info = 10;
+  optional bool rcv = 11;
+}
+
+
+message MessageDataMAPI {
+  extend MessageHeader
+  {
+    optional MessageDataMAPI data = 1003;
+  }
+  optional MessageSystemInfo sys_info = 1;
+  optional string host_address = 2;
+  optional uint32 host_port = 3;
+  optional uint64 dtime_utc = 4;
+  optional string local_user_dn = 5;
+  optional uint32 flags = 6;
+  optional bool rcv = 7;
+  optional bytes mapi_msg = 8;
+  optional bytes mapi_rcpts = 9;
+  optional bytes mapi_attachments = 10;
+  optional string blocking_rules = 11;
+  optional MessageProcessInfo process_info = 12;
+}
+
+
+message MessageDataScreenshot {
+  extend MessageHeader
+  {
+    optional MessageDataScreenshot data = 1004;
+  }
+  optional MessageSystemInfo sys_info = 1;
+  optional uint64 dtime_utc = 2;
+  optional uint32 flags = 3;
+  optional bytes screenshot_thumb = 4;
+  optional bytes screenshot = 5;
+}
+
+
+message MessageDataDesktopProcess {
+  extend MessageHeader
+  {
+    optional MessageDataDesktopProcess data = 1005;
+  }
+  optional MessageSystemInfo sys_info = 1;
+  optional MessageProcessInfo process_info = 2;
+  optional uint64 dtime_utc = 3;
+  optional bool started = 4;
+}
+
+
+message MessageDataDesktopActivateWindow {
+  extend MessageHeader
+  {
+    optional MessageDataDesktopActivateWindow data = 1006;
+  }
+  optional MessageSystemInfo sys_info = 1;
+  optional MessageProcessInfo process_info = 2;
+  optional uint64 dtime_utc = 3;
+}
+
+
+message MessageDataDesktopUnactivateWindow {
+  extend MessageHeader
+  {
+    optional MessageDataDesktopUnactivateWindow data = 1007;
+  }
+  optional MessageSystemInfo sys_info = 1;
+  optional uint64 dtime_utc = 2;
+}
+
+
+message MessageDataDesktopEvent {
+  extend MessageHeader
+  {
+    optional MessageDataDesktopEvent data = 1008;
+  }
+  
+  enum DesktopEvent {
+    SESSION_LOGON = 0;
+    SESSION_LOGOFF = 1;
+    SESSION_LOCK = 2;
+    SESSION_UNLOCK = 3;
+    SESSION_LOCAL_CONNECT = 4;
+    SESSION_LOCAL_DISCONNECT = 5;
+    SESSION_REMOTE_CONNECT = 6;
+    SESSION_REMOTE_DISCONNECT = 7;
+    SESSION_IDLE_START = 8;
+    SESSION_IDLE_END = 9;
+    SESSION_SCREENSAVER_START = 10;
+    SESSION_SCREENSAVER_END = 11;
+    SESSION_INFO = 12;
+  }
+
+  optional MessageSystemInfo sys_info = 1;
+  optional uint64 dtime_utc = 2;
+  optional DesktopEvent event = 3;
+  optional bytes info = 4;
+}
+
+
+message MessageDataDesktopNoop {
+  extend MessageHeader
+  {
+    optional MessageDataDesktopNoop data = 1009;
+  }
+  optional MessageSystemInfo sys_info = 1;
+  optional uint64 dtime_utc = 2;
+}
+
+
+message MessageDataDesktopAppIcon {
+  extend MessageHeader
+  {
+    optional MessageDataDesktopAppIcon data = 1010;
+  }
+  optional MessageSystemInfo sys_info = 1;
+  optional MessageProcessInfo process_info = 2;
+  optional uint32 format = 3;
+  optional bytes icon_data = 4;
+}
+
+
+message MessageDataConversationMessage {
+  extend MessageHeader
+  {
+    optional MessageDataConversationMessage data = 1011;
+  }
+  optional MessageSystemInfo sys_info = 1;
+  optional uint64 dtime_utc = 4;              //  время перехвата, filetime utc
+  optional uint64 dtime_msg_utc = 5;          //  время сообщения, filetime utc
+  optional string messenger_name = 6;         //  название мессенджера, любое (например, "skype")
+  optional string messenger_type = 7;         //  опционально: указывает тип перехвата (например, "agent", "agent-net", "ethersensor")
+  optional string conversation_hash = 8;      //  уникальный идентификатор переписки, как правило - хэш (любой, sha1, sha2) от упорядоченного по алфавиту ID всех участников переписки
+  optional string message_id = 9;             //  опционально: ID сообщения в пределах переписки (conversation_hash), позволяет отсекать дубли или сылаться на него при перехвате отредактированого сообщения
+  optional string local_user = 10;            //  опционально: ID локального пользователя перписки (например, skype-login)
+  optional string sender_user = 11;           //  опционально: ID отправителя сообщения
+  optional string chat_users = 12;            //  опционально: список всех участников переписки через перевод строки
+  optional string message_body = 13;          //  опционально: тело сообщения в виде plain-текста
+  optional string message_info = 14;          //  опционально: доп. информация о сообщении или переписке в виде json-строки
+  optional MessageProcessInfo process_info = 15;  //  опционально: информация о процессе, для которого было перехвачено сообщение
+}
+
+
+message MessageDataConversationFile {
+  extend MessageHeader
+  {
+    optional MessageDataConversationFile data = 1012;
+  }
+  optional MessageSystemInfo sys_info = 1;
+  optional uint64 dtime_utc = 4;
+  optional uint64 dtime_msg_utc = 5;
+  optional string messenger_name = 6;
+  optional string messenger_type = 7;
+  optional string conversation_hash = 8;
+  optional string local_user = 9;
+  optional string sender_user = 10;
+  optional string chat_users = 11;
+  optional string file_name = 12;
+  optional uint64 file_size = 13;
+  optional string file_info = 14;
+  optional bytes file_data = 15;
+  optional MessageProcessInfo process_info = 16;
+}
+
+
+message MessageDataConversationVoice {
+  extend MessageHeader
+  {
+    optional MessageDataConversationVoice data = 1013;
+  }
+  
+  enum VoiceCallDirection {
+    UNKNOWN = 0;
+    INCOMING = 1;
+    OUTGOING = 2;
+  }
+
+  optional MessageSystemInfo sys_info = 1;
+  optional uint64 dtime_utc = 4;
+  optional uint64 dtime_msg_utc = 5;
+  optional string messenger_name = 6;
+  optional string messenger_type = 7;
+  optional string conversation_hash = 8;
+  optional VoiceCallDirection call_direction = 9;
+  optional string local_user = 10;
+  optional string sender_user = 11;
+  optional string chat_users = 12;
+  optional uint32 duration = 13;
+  optional string voice_info = 14;
+  optional bytes voice_data = 15;
+  optional MessageProcessInfo process_info = 16;
+}
+
+
+message MessageDataBrowserEvent {
+  extend MessageHeader
+  {
+    optional MessageDataBrowserEvent data = 1014;
+  }
+  optional MessageSystemInfo sys_info = 1;
+  optional uint64 dtime_utc = 2;
+  optional string browser = 3;
+  optional string url = 4;
+  optional string title = 5;
+  optional bytes info = 6;
+  optional MessageProcessInfo process_info = 7;
+}
+
+
+message MessageDataKeylogger {
+  extend MessageHeader
+  {
+    optional MessageDataKeylogger data = 1015;
+  }
+  optional MessageSystemInfo sys_info = 1;
+  optional MessageProcessInfo process_info = 2;
+  optional uint64 dtime_start_utc = 3;
+  optional uint64 dtime_end_utc = 4;
+  optional uint32 flags = 5;
+  optional string title = 6;
+  optional uint32 log_keys_count = 7;
+  optional bytes log_data = 8;
+}
+
+
+message MessageDataMailProcessing {
+  extend MessageHeader
+  {
+    optional MessageDataMailProcessing data = 1016;
+  }
+  optional uint64 dtime_utc = 1;
+  optional string account_type = 2;
+  optional string account_name = 3;
+  optional int32 account_tzbias = 4;
+  optional bytes msg = 5;
+  optional string report = 6;
+  optional string int_emails = 7;
+  optional string ext_emails = 8;
+  optional bool from_contains_internal_emails = 9;
+  optional bool from_contains_external_emails = 10;
+  optional bool to_contains_internal_emails = 11;
+  optional bool to_contains_external_emails = 12;
+}
+
+
+message MessageDataClipboard {
+  extend MessageHeader
+  {
+    optional MessageDataClipboard data = 1017;
+  }
+  optional MessageSystemInfo sys_info = 1;
+  optional MessageProcessInfo process_info = 2;
+  optional uint64 dtime_utc = 3;
+  optional bool is_copy = 4;
+  optional string window_title = 5;
+  optional uint32 flags = 6;
+  optional uint32 data_type = 7;
+  optional bytes clipboard_data = 8;
+}
+
+
+message MessageDataPrinter {
+  extend MessageHeader
+  {
+    optional MessageDataPrinter data = 1018;
+  }
+
+  enum PrinterDataFormat {
+    UNKNOWN = 0;
+    PLAINTEXT = 1;
+    PDF = 2;
+    XPS = 3;
+  }
+
+  optional MessageSystemInfo sys_info = 1;
+  optional MessageProcessInfo process_info = 2;
+  optional MessagePrinterInfo printer_info = 3;
+  optional uint64 dtime_utc = 4;
+  optional uint32 flags = 5;
+  optional PrinterDataFormat document_data_format = 6;
+  optional uint32 document_pages_count = 7;
+  optional bytes document_data = 8;
+  optional string document_name = 9;
+}
+
+
+message MessageDataFTP {
+  extend MessageHeader
+  {
+    optional MessageDataFTP data = 1019;
+  }
+  optional MessageSystemInfo sys_info = 1;
+  optional string host_address = 2;
+  optional uint32 host_port = 3;
+  optional uint64 dtime_utc = 4;
+  optional uint32 flags = 5;
+  optional string user_name = 6;
+  optional string user_pass = 7;
+  optional bool rcv = 8;
+  optional string file_path = 9;
+  optional uint64 file_size = 10;
+  optional bytes file_data = 11;
+  optional MessageProcessInfo process_info = 12;
+}
+
+
+message MessageDataWebMsgMessage {
+  extend MessageHeader
+  {
+    optional MessageDataWebMsgMessage data = 1020;
+  }
+  optional MessageSystemInfo sys_info = 1;
+  optional string conversation_hash = 2;
+  optional uint64 dtime_utc = 3;
+  optional uint64 dtime_msg_utc = 4;
+  optional string messenger_name = 5;
+  optional string messenger_type = 6;
+  optional uint32 flags = 7;
+  optional string parsid = 8;
+  optional string user_local = 9;
+  optional string user_sender = 10;
+  optional string user_conv = 11;
+  optional bool rcv = 12;
+  optional string message_id = 13;
+  optional string message = 14;
+  optional MessageProcessInfo process_info = 15;
+}
+
+
+message MessageDataWebMsgMailMessage {
+  extend MessageHeader
+  {
+    optional MessageDataWebMsgMailMessage data = 1021;
+  }
+  optional MessageSystemInfo sys_info = 1;
+  optional string conversation_hash = 2;
+  optional uint64 dtime_utc = 3;
+  optional uint64 dtime_msg_utc = 4;
+  optional string messenger_name = 5;
+  optional string messenger_type = 6;
+  optional uint32 flags = 7;
+  optional string parsid = 8;
+  optional string user_local = 9;
+  optional uint64 folder_id = 10;
+  optional string folder_name = 11;
+  optional string user_sender = 12;
+  optional string mail_to = 13;
+  optional string mail_cc = 14;
+  optional string mail_bcc = 15;
+  optional uint32 rcv = 16;
+  optional uint32 isfull = 17;
+  optional uint32 isnew = 18;
+  optional string subject = 19;
+  optional string file_id = 20;
+  optional string message = 21;
+  optional bytes information = 22;
+  optional MessageProcessInfo process_info = 23;
+}
+
+
+message MessageDataWebMsgComment {
+  extend MessageHeader
+  {
+    optional MessageDataWebMsgComment data = 1022;
+  }
+  optional MessageSystemInfo sys_info = 1;
+  optional string conversation_hash = 2;
+  optional uint64 dtime_utc = 3;
+  optional uint64 dtime_msg_utc = 4;
+  optional string messenger_name = 5;
+  optional string messenger_type = 6;
+  optional uint32 flags = 7;
+  optional string parsid = 8;
+  optional string user_local = 9;
+  optional string user_sender = 10;
+  optional bool is_new = 11;
+  optional string message_id = 12;
+  optional string message = 13;
+  optional bytes information = 14;
+  optional MessageProcessInfo process_info = 15;
+}
+
+
+message MessageDataSharedFiles {
+  extend MessageHeader
+  {
+    optional MessageDataSharedFiles data = 1023;
+  }
+  optional MessageSystemInfo sys_info = 1;
+  optional MessageProcessInfo process_info = 2;
+  optional uint64 dtime_utc = 3;
+  optional uint32 operation_type = 4;
+  optional bool flag_over_storage = 5;
+  optional bool flag_over_filesize = 6;
+  optional bool flag_over_memsize = 7;
+  optional string file_path = 8;
+  optional uint64 file_size = 9;
+  optional bytes file_data = 10;
+}
+
+
+message MessageDataCdDvdStorage {
+  extend MessageHeader
+  {
+    optional MessageDataCdDvdStorage data = 1024;
+  }
+  optional MessageSystemInfo sys_info = 1;
+  optional MessageProcessInfo process_info = 2;
+  optional uint64 dtime_utc = 3;
+  optional string device_id = 4;
+  optional string manufact_name = 5;
+  optional string product_name = 6;
+  optional string serial_number = 7;
+  optional uint32 operation_type = 8;
+  optional bool flag_over_storage = 9;
+  optional bool flag_over_filesize = 10;
+  optional bool flag_over_memsize = 11;
+  optional string path_id = 12;
+  optional string file_path = 13;
+  optional uint64 file_size = 14;
+  optional bytes file_data = 15;
+}
+
+
+message MessageDataUsbFiles {
+  extend MessageHeader
+  {
+    optional MessageDataUsbFiles data = 1025;
+  }
+  optional MessageSystemInfo sys_info = 1;
+  optional MessageProcessInfo process_info = 2;
+  optional uint64 dtime_utc = 3;
+  optional uint32 vendor_id = 4;
+  optional uint32 product_id = 5;
+  optional string device_id = 6;
+  optional string manufact_name = 7;
+  optional string product_name = 8;
+  optional string serial_number = 9;
+  optional uint32 operation_type = 10;
+  optional bool flag_over_storage = 11;
+  optional bool flag_over_filesize = 12;
+  optional bool flag_over_memsize = 13;
+  optional string path_id = 14;
+  optional string file_path = 15;
+  optional uint64 file_size = 16;
+  optional bytes file_data = 17;
+}
+
+
+message MessageDataCloudFiles {
+  extend MessageHeader
+  {
+    optional MessageDataCloudFiles data = 1026;
+  }
+  optional MessageSystemInfo sys_info = 1;
+  optional MessageProcessInfo process_info = 2;
+  optional uint64 dtime_utc = 3;
+  optional string cloud = 4;
+  optional bool rcv = 5;
+  optional uint32 operation_type = 6;
+  optional bool flag_over_storage = 7;
+  optional bool flag_over_filesize = 8;
+  optional bool flag_over_memsize = 9;
+  optional string file_path = 10;
+  optional uint64 file_size = 11;
+  optional bytes file_data = 12;
+}
+
+
+message MessageWsIndexerEvent {
+  extend MessageHeader
+  {
+    optional MessageWsIndexerEvent data = 1027;
+  }
+  optional MessageSystemInfo sys_info = 1;
+  optional uint64 dtime_utc = 2;
+  optional uint32 flags = 3;
+  optional uint32 storage_type = 4;
+  optional string file_path = 5;
+  optional uint64 file_size = 6;
+  optional uint64 file_time = 7;
+  optional string file_hash = 8;
+  optional string bank_idx = 9;
+  optional string file_idx = 10;
+  optional string hash_rules = 11;
+  optional bytes property_data = 12;
+}
+
+
+message MessageDataDevice {
+  extend MessageHeader
+  {
+    optional MessageDataDevice data = 1028;
+  }
+  optional MessageSystemInfo sys_info = 1;
+  optional uint64 dtime_utc = 2;
+  optional uint32 dev_type = 3;
+  optional uint32 physical_type = 4;
+  optional uint32 device_state = 5;
+  optional uint32 device_access = 6;
+  optional uint64 device_start_time = 7;
+  optional uint64 device_stop_time = 8;
+  optional uint32 device_vid = 9;
+  optional uint32 device_pid = 10;
+  optional string device_id = 11;
+  optional string indent_id = 12;
+  optional string manufact_name = 13;
+  optional string product_name = 14;
+  optional string serial_number = 15;
+  optional string classses = 16;
+}
+
+
+message MessageDataMapiOutlook {
+  extend MessageHeader
+  {
+    optional MessageDataMapiOutlook data = 1029;
+  }
+  optional MessageSystemInfo sys_info = 1;
+  optional uint64 dtime_utc = 2;
+  optional string local_user_dn = 3;
+  optional bool rcv = 4;
+  optional string display_name = 5;
+  optional string profile_name = 6;
+  optional string message_id = 7;
+  optional bytes msg_data = 8;
+  optional string blocking_rules = 9;
+  optional MessageProcessInfo process_info = 10;
+}
+
+
+message MessageDataHttp {
+  extend MessageHeader
+  {
+    optional MessageDataHttp data = 1030;
+  }
+  optional MessageSystemInfo sys_info = 1;
+  optional string host_address = 2;
+  optional uint32 host_port = 3;
+  optional uint64 dtime_utc = 4;
+  optional uint32 flags = 5;
+  optional string request_header = 6;
+  optional bytes request_data = 7;
+  optional string blocking_rules = 8;
+  optional MessageProcessInfo process_info = 9;
+}
+
+
+message MessageDataDesktopBulkNoops {
+  extend MessageHeader
+  {
+    optional MessageDataDesktopBulkNoops data = 1031;
+  }
+  optional MessageSystemInfo sys_info = 1;
+  optional uint64 dtime_of_day_utc = 2;
+  optional bytes bulk_noops = 3;
+}
