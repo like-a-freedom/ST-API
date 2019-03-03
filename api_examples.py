@@ -15,7 +15,7 @@ upload = client.Upload()
 
 pp = pprint.PrettyPrinter(indent=3)
 
-#   First, we have to register out custom service on SecureTower server
+#   First, we have to register our custom service on SecureTower server
 secret_key = auth.server_register(ST_IP, ST_PORT, CLIENT_HOST)
 print("\n Secret key: ", secret_key)
 
